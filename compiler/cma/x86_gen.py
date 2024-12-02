@@ -167,11 +167,11 @@ def asm_gen(ir):
                 add   rsp, qword {discard}
                 push  rax
             """
+        case ('label', label)
+            return asm.strip() + '\n'
         case _:
-            raise NotImplementedError(ir)
-
-    if ir[0] == 'label':
-        return asm.strip() + '\n'
+            return "Unknown CMa Statement: "+ir+"\n"
+            #raise NotImplementedError(ir)
 
     return f';;; {ir}\n' + asm.strip() + '\n'
 
