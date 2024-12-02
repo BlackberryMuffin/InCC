@@ -134,8 +134,13 @@ def code_r(expr, env):
                 env[local_name] = {'scope': 'local', 'address': addr, 'size': 8}
                 addr += 8
 
+            ### funktioniert am besten, wenn asm_gen() bei unbekannten Befehlen eine Error Zeile in den asm code schreibt, statt selbst einen Error zu werfen
+            illegals  = list(set(f"Duplicate Parameter: '{ID}' present in arguments of {proc_l} {arg_names.count(ID)} times" for ID in arg_names if arg_names.count(ID)>1))
+            illegals += list(set(f"Duplicate Local: '{ID}' present in locals of {proc_l} {local_names.count(ID)} times" for ID in local_names if local_names.count(ID)>1))
+            illegals += list(set(f"Illegal Variable: '{ID}' present in both parameters and locals of {proc_l}" for ID in arg_names if ID in local_names))
+
             return [
-                ('jump', endproc_l),
+                *[i for i in illegals],
                 ('label', proc_l),
 
                 ('enter',),
